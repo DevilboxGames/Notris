@@ -5,20 +5,89 @@
 #include <string.h>
 
 #include "libs/app.h"
+#include "libs/sprite.h"
+static inline APP_U32 getColour(int r, int g, int b)
+{
+    return (APP_U32)((b << 16 | g << 8 | r));
+}
+void drawBox(APP_U32 sizeX, APP_U32 sizeY, APP_U32 posX, APP_U32 posY, APP_U32 borderWidth, APP_U32 colour, APP_U32* canvas, APP_U32 canvasW, APP_U32 canvasH)
+{
+    int i,j,k = 0;
 
+    const int BoxMaxX = posX + sizeX + borderWidth * 2;
+    const int BoxMaxY = posY + sizeY + borderWidth * 2;
 
+    for(j = posY; j < BoxMaxY; ++j)
+    {
+        //if(i > BoxPosX + EdgeWidth && i < BoxMaxX - EdgeWidth)
+          //  continue;
+        
+        for(i = posX; i < BoxMaxX; ++i)
+        {
+            if(borderWidth > 0 && j > posY + borderWidth && j < BoxMaxY - borderWidth - 1 && i > posX + borderWidth && i < BoxMaxX - borderWidth - 1)
+                i = BoxMaxX - borderWidth - 1;
+
+            canvas[i + j * canvasW] = colour;
+        } 
+    }
+}
+void drawUi(APP_U32* canvas, APP_U32 canvasW, APP_U32 canvasH)
+{
+    int i,j,k = 0;
+    int r,g,b,a = 0;
+    const int BoxSize = 64;
+    const int EdgeWidth = 2;
+    const int BoxPosX = 10;
+    const int BoxPosY = 100;
+    const int BoxMaxX = BoxPosX + BoxSize + EdgeWidth + EdgeWidth;
+    const int BoxMaxY = BoxPosY + BoxSize + EdgeWidth + EdgeWidth;
+
+    drawBox(32, 32, 8, 32, 2, getColour(255, 0, 0), canvas, canvasW, canvasH);
+    drawBox(176, 300, 32, 8, 2, getColour(0, 255, 0), canvas, canvasW, canvasH);
+    drawBox(32, 98, 218, 32, 2, getColour(0, 0, 255), canvas, canvasW, canvasH);
+   
+}
 int app_proc( app_t* app, void* user_data ) {
     (void) user_data;
-    static APP_U32 canvas[ 320 * 200 ];
-    memset( canvas, 0xC0, sizeof( canvas ) );
+    const int canvasW = 240;
+    const int canvasH = 320;
+    const int canvasSize = canvasW * canvasH;
+    static APP_U32 canvas[ 240 * 320];
+    memset( canvas, 0x00, sizeof( canvas ) );
     app_screenmode( app, APP_SCREENMODE_WINDOW );
+    app_interpolation(app, APP_INTERPOLATION_NONE);
+
+    APP_U32 palColours[8] = {
+        COLOUR(0,0,0),
+        COLOUR(255,0,0),
+        COLOUR(0,255,0),
+        COLOUR(0,0,255),
+        COLOUR(255,255,0),
+        COLOUR(255,0,255),
+        COLOUR(0,255,255),
+        COLOUR(255,255,255)
+    };
+    palette_t* palette = MakePalette(8,palColours);
+
+    APP_U32 spriteData[] = {
+        7,7,7,7,7,7,7,7,
+        7,1,1,1,2,2,2,7,
+        7,1,1,1,2,2,2,7,
+        7,0,0,0,0,0,0,7,
+        7,3,4,5,5,4,3,7,
+        7,3,4,6,6,4,3,7,
+        7,3,4,6,6,4,3,7,
+        7,7,7,7,7,7,7,7,
+    };
+    sprite_t* sprite = MakeSprite(8, 8, 0,spriteData);
 
     while( app_yield( app ) != APP_STATE_EXIT_REQUESTED ) {
-        int x = rand() % 320;
-        int y = rand() % 200;
-        APP_U32 color = rand() | ( (APP_U32) rand() << 16 );
-        canvas[ x + y * 320 ] = color;
-        app_present( app, canvas, 320, 200, 0xffffff, 0x000000 );
+        drawUi(canvas, canvasW, canvasH);
+        DrawSprite(32,32,0, canvas,canvasW,canvasH);
+        //DrawSprite(32,44,0, canvas,canvasW,canvasH);
+        //DrawSprite(32,40,0, canvas,canvasW,canvasH);
+        //DrawSprite(64,32,0, canvas,canvasW,canvasH);
+        app_present( app, canvas, canvasW, canvasH, 0xffffff, 0x000000 );
     }
     return 0;
 }
