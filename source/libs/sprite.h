@@ -1,6 +1,6 @@
 ﻿
-#ifndef sprie_h
-#define sprite_h
+#ifndef SPRITE_H
+#define SPRITE_H
 
 #include "app.h"
 

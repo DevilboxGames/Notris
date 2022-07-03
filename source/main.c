@@ -42,17 +42,17 @@ void drawUi(APP_U32* canvas, APP_U32 canvasW, APP_U32 canvasH)
     const int BoxMaxX = BoxPosX + BoxSize + EdgeWidth + EdgeWidth;
     const int BoxMaxY = BoxPosY + BoxSize + EdgeWidth + EdgeWidth;
 
-    drawBox(32, 32, 8, 32, 2, getColour(255, 0, 0), canvas, canvasW, canvasH);
-    drawBox(176, 300, 32, 8, 2, getColour(0, 255, 0), canvas, canvasW, canvasH);
-    drawBox(32, 98, 218, 32, 2, getColour(0, 0, 255), canvas, canvasW, canvasH);
+    drawBox(16, 16, 2, 32, 1, getColour(255, 0, 0), canvas, canvasW, canvasH);
+    drawBox(130, 300, 24, 8, 1, getColour(0, 255, 0), canvas, canvasW, canvasH);
+    drawBox(16, 16, 160, 32, 1, getColour(0, 0, 255), canvas, canvasW, canvasH);
    
 }
 int app_proc( app_t* app, void* user_data ) {
     (void) user_data;
-    const int canvasW = 240;
+    const int canvasW = 180;
     const int canvasH = 320;
     const int canvasSize = canvasW * canvasH;
-    static APP_U32 canvas[ 240 * 320];
+    static APP_U32 canvas[ 180 * 320];
     memset( canvas, 0x00, sizeof( canvas ) );
     app_screenmode( app, APP_SCREENMODE_WINDOW );
     app_interpolation(app, APP_INTERPOLATION_NONE);
